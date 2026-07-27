@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETP — L'Hort de Lys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#DA121A;
+    --yellow:#FCDD09;
+    --ink:#1c1a15;
+    --paper:#FBF8F1;
+    --paper-2:#F1ECDD;
+    --green:#2F5233;
+    --green-light:#4C7A44;
+    --line:#DCD4BC;
+    --gray:#6b6558;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Roboto',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .senyera{
+    height:8px;
+    display:flex;
+  }
+  .senyera div{flex:1;height:100%;}
+  .senyera div:nth-child(odd){background:var(--red);}
+  .senyera div:nth-child(even){background:var(--yellow);}
+
+  header{
+    padding:28px 24px 20px;
+    border-bottom:2px solid var(--ink);
+  }
+  header .eyebrow{
+    font-family:'Roboto Mono',monospace;
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--red);
+    font-weight:600;
+  }
+  h1{
+    font-weight:900;
+    font-size:clamp(28px,5vw,42px);
+    margin:4px 0 2px;
+    letter-spacing:-0.5px;
+  }
+  header p.sub{
+    margin:0;
+    color:var(--gray);
+    font-size:14px;
+  }
+
+  main{max-width:960px;margin:0 auto;padding:24px;}
+
+  .page-wrap{
+    display:grid;
+    grid-template-columns:1fr 280px;
+    gap:0;
+    max-width:1300px;
+    margin:0 auto;
+  }
+  .page-wrap > main{margin:0;max-width:none;}
+  aside.explainer{
+    padding:28px 20px;
+    border-left:2px solid var(--ink);
+  }
+  aside.explainer .tag{
+    font-family:'Roboto Mono',monospace;
+    font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--red);font-weight:700;margin-bottom:6px;
+  }
+  aside.explainer h3{
+    font-size:15px;margin:0 0 8px;font-weight:900;
+  }
+  aside.explainer .block{margin-bottom:26px;}
+  aside.explainer p{
+    font-size:13px;line-height:1.55;color:#3a362c;margin:0 0 8px;
+  }
+  aside.explainer .formula{
+    font-family:'Roboto Mono',monospace;font-size:12px;
+    background:var(--paper-2);border:1px solid var(--line);
+    padding:8px 10px;margin:8px 0;
+  }
+  aside.explainer .src{
+    font-size:11px;color:var(--gray);font-style:italic;
+  }
+  @media(max-width:1150px){
+    .page-wrap{grid-template-columns:1fr;max-width:960px;}
+    aside.explainer{border-left:none;border-top:2px solid var(--ink);}
+  }
+
+  .search-row{
+    display:flex;gap:8px;flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .search-row input{
+    flex:1;min-width:220px;
+    padding:12px 14px;
+    border:2px solid var(--ink);
+    background:white;
+    font-family:'Roboto',sans-serif;
+    font-size:15px;
+  }
+  .search-row button{
+    padding:12px 20px;
+    border:2px solid var(--ink);
+    background:var(--red);
+    color:white;
+    font-weight:700;
+    font-family:'Roboto',sans-serif;
+    cursor:pointer;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    font-size:13px;
+  }
+  .search-row button:hover{background:#b30e15;}
+  #suggestions{
+    display:none;
+    background:white;border:2px solid var(--ink);border-top:none;
+    margin-top:-20px;margin-bottom:20px;
+  }
+  #suggestions div{
+    padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--line);font-size:14px;
+  }
+  #suggestions div:hover{background:var(--paper-2);}
+
+  .status{font-size:13px;color:var(--gray);margin-bottom:16px;font-family:'Roboto Mono',monospace;}
+
+  .hero-stat{
+    display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;
+    background:var(--ink);color:var(--paper);
+    padding:24px 28px;margin-bottom:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-stat::before{
+    content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+    background:var(--yellow);opacity:0.08;border-radius:50%;
+  }
+  .hero-stat .big{
+    font-size:64px;font-weight:900;line-height:1;
+    font-family:'Roboto Mono',monospace;
+  }
+  .hero-stat .big span{font-size:22px;font-weight:400;opacity:0.7;}
+  .hero-stat .label{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--yellow);font-weight:700;margin-bottom:4px;}
+  .hero-stat .meta{font-size:13px;color:#cfc9b6;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+  .card{
+    border:2px solid var(--ink);background:white;padding:16px;
+  }
+  .card .k{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);font-weight:700;}
+  .card .v{font-size:26px;font-weight:900;font-family:'Roboto Mono',monospace;margin-top:4px;}
+
+  h2{
+    font-size:13px;text-transform:uppercase;letter-spacing:1.5px;
+    border-left:6px solid var(--red);padding-left:10px;
+    margin:32px 0 14px;
+  }
+
+  .chart-wrap{background:white;border:2px solid var(--ink);padding:16px;margin-bottom:24px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;background:white;}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);}
+  th:first-child,td:first-child{text-align:left;}
+  th{font-family:'Roboto Mono',monospace;text-transform:uppercase;font-size:11px;color:var(--gray);border-bottom:2px solid var(--ink);}
+  tr.today td{background:var(--paper-2);font-weight:700;}
+  tr.past td{color:var(--gray);}
+
+  .irrig{background:var(--green);color:white;padding:20px;border:2px solid var(--ink);}
+  .irrig h2{color:var(--yellow);border-left-color:var(--yellow);margin-top:0;}
+  .irrig-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;}
+  .field{flex:1;min-width:150px;}
+  .field label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;opacity:0.85;}
+  .field input,.field select{
+    width:100%;padding:9px 10px;border:none;font-size:15px;font-family:'Roboto',sans-serif;
+  }
+  .irrig-result{
+    background:rgba(255,255,255,0.12);padding:14px 16px;
+    display:flex;gap:24px;flex-wrap:wrap;
+  }
+  .irrig-result .item .num{font-family:'Roboto Mono',monospace;font-weight:900;font-size:22px;}
+  .irrig-result .item .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;opacity:0.8;}
+
+  footer{
+    max-width:960px;margin:0 auto;padding:20px 24px 40px;
+    font-size:12px;color:var(--gray);
+  }
+  footer a{color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="senyera"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+<header>
+  <div class="eyebrow">L'Hort de Lys — outil de jardin</div>
+  <h1>Calcul de l'ETP</h1>
+  <p class="sub">Évapotranspiration de référence (ET0, méthode FAO Penman-Monteith), calculée automatiquement pour votre parcelle.</p>
+</header>
+
+<div class="page-wrap">
+<main>
+
+  <div class="search-row">
+    <input id="place-input" type="text" placeholder="Nom de commune (ex : Perpignan, Toulouges...)" value="Perpignan">
+    <button id="search-btn">Chercher</button>
+    <button id="geoloc-btn" style="background:var(--ink);">📍 Ma position</button>
+  </div>
+  <div id="suggestions"></div>
+
+  <div class="status" id="status">Chargement des données pour Perpignan…</div>
+
+  <div class="hero-stat">
+    <div>
+      <div class="label">ET0 aujourd'hui</div>
+      <div class="big" id="today-etp">–<span> mm/j</span></div>
+    </div>
+    <div class="meta" id="location-meta"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="k">Cumul ET0 — 7 derniers jours</div>
+      <div class="v" id="sum-past7">–</div>
+    </div>
+    <div class="card">
+      <div class="k">Cumul ET0 — 7 prochains jours (prévision)</div>
+      <div class="v" id="sum-next7">–</div>
+    </div>
+  </div>
+
+  <h2>Évolution de l'ET0 (mm/jour)</h2>
+  <div class="chart-wrap">
+    <canvas id="etp-chart" height="90"></canvas>
+  </div>
+
+  <h2>Détail jour par jour</h2>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>ET0 (mm)</th><th>Pluie (mm)</th><th>T° min / max</th></tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+  <div class="irrig">
+    <h2>Besoin d'arrosage estimé</h2>
+    <div class="irrig-row">
+      <div class="field">
+        <label>Surface (m²)</label>
+        <input type="number" id="surface" value="20" min="0" step="1">
+      </div>
+      <div class="field">
+        <label>Coefficient cultural (Kc)</label>
+        <select id="kc-select">
+          <option value="0.5">Sol nu / semis récent — 0.5</option>
+          <option value="0.7">Jeunes plants — 0.7</option>
+          <option value="0.9" selected>Légumes feuilles, ail, oignon — 0.9</option>
+          <option value="1.0">Cucurbitacées — 1.0</option>
+          <option value="1.15">Tomate en pleine production — 1.15</option>
+          <option value="1.2">Pomme de terre en végétation — 1.2</option>
+          <option value="custom">Autre (saisie libre)</option>
+        </select>
+      </div>
+      <div class="field" id="kc-custom-field" style="display:none;">
+        <label>Kc personnalisé</label>
+        <input type="number" id="kc-custom" value="1.0" min="0" step="0.05">
+      </div>
+      <div class="field">
+        <label>Période</label>
+        <select id="periode-select">
+          <option value="1">Aujourd'hui</option>
+          <option value="7" selected>7 prochains jours</option>
+          <option value="16">16 prochains jours</option>
+        </select>
+      </div>
+    </div>
+    <div class="irrig-result">
+      <div class="item">
+        <div class="num" id="etc-total">–</div>
+        <div class="lbl">ETc cumulée (mm)</div>
+      </div>
+      <div class="item">
+        <div class="num" id="pluie-total">–</div>
+        <div class="lbl">Pluie prévue (mm)</div>
+      </div>
+      <div class="item">
+        <div class="num" id="deficit-mm">–</div>
+        <div class="lbl">Déficit hydrique (mm)</div>
+      </div>
+      <div class="item">
+        <div class="num" id="litres-total">–</div>
+        <div class="lbl">Litres à apporter</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<aside class="explainer">
+  <div class="tag">Les explications</div>
+
+  <div class="block">
+    <h3>ET0 — évapotranspiration de référence</h3>
+    <p>Quantité d'eau (en mm) qu'évaporerait et transpirerait un gazon de référence, bien alimenté en eau, dans les conditions météo du jour. Elle dépend uniquement du climat : température, humidité, vent, rayonnement.</p>
+    <div class="formula">ET0 = f(T°, humidité,<br>vent, rayonnement)</div>
+    <p class="src">Méthode FAO Penman-Monteith (Allen et al., FAO-56, 1998) — standard international, indépendant de la culture en place.</p>
+  </div>
+
+  <div class="block">
+    <h3>ETP — évapotranspiration potentielle</h3>
+    <p>Terme plus ancien et parfois utilisé comme synonyme d'ET0 dans le langage courant, mais historiquement calculé par d'autres formules (Thornthwaite, Penman original...). Dans cet outil, la valeur affichée est l'ET0 FAO, la référence actuelle la plus fiable.</p>
+  </div>
+
+  <div class="block">
+    <h3>ETc — besoin réel de la culture</h3>
+    <p>L'ET0 seule ne dit pas combien boit vraiment une culture donnée. On la corrige par un coefficient cultural Kc, propre au stade de développement de la plante :</p>
+    <div class="formula">ETc = ET0 × Kc</div>
+    <p>Un sol nu ou un jeune semis (Kc bas) transpire peu ; une tomate en pleine production (Kc élevé) beaucoup plus.</p>
+  </div>
+
+  <div class="block">
+    <h3>À retenir au jardin</h3>
+    <p>Déficit = ETc − pluie reçue. S'il est positif, la culture consomme plus d'eau que la pluie n'en apporte : c'est le volume à compenser par l'arrosage.</p>
+  </div>
+</aside>
+</div>
+
+<footer>
+  Données : Open-Meteo (modèle météo + ET0 FAO Penman-Monteith), API publique et gratuite, sans clé. ETc = ET0 × Kc. Déficit = ETc − pluie efficace (pluie brute non corrigée du ruissellement). Outil indicatif, ne remplace pas une observation du sol.
+</footer>
+
+<script>
+let currentData = null;
+let currentLoc = { name: "Perpignan", lat: 42.6886, lon: 2.8948 };
+
+const statusEl = document.getElementById('status');
+const suggestionsEl = document.getElementById('suggestions');
+
+async function geocode(query){
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=fr&format=json`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.results || [];
+}
+
+async function fetchETP(lat, lon){
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=et0_fao_evapotranspiration,precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=auto&past_days=7&forecast_days=16`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('Échec de récupération météo');
+  return res.json();
+}
+
+function fmtDate(iso){
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('fr-FR', {weekday:'short', day:'2-digit', month:'2-digit'});
+}
+
+function todayISO(tz){
+  // rely on the daily array containing today; compare to local date string
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+
+async function loadLocation(loc){
+  currentLoc = loc;
+  statusEl.textContent = `Chargement des données pour ${loc.name}…`;
+  document.getElementById('location-meta').textContent = '';
+  try{
+    const data = await fetchETP(loc.lat, loc.lon);
+    currentData = data;
+    render(data, loc);
+    statusEl.textContent = `Données mises à jour · ${loc.name} (${loc.lat.toFixed(3)}, ${loc.lon.toFixed(3)}) · fuseau ${data.timezone}`;
+  }catch(e){
+    statusEl.textContent = "Erreur : impossible de récupérer les données météo. Détail technique : " + (e.name||'') + " — " + (e.message||e);
+    console.error(e);
+  }
+}
+
+function render(data, loc){
+  const dates = data.daily.time;
+  const et0 = data.daily.et0_fao_evapotranspiration;
+  const rain = data.daily.precipitation_sum;
+  const tmax = data.daily.temperature_2m_max;
+  const tmin = data.daily.temperature_2m_min;
+
+  const today = new Date().toISOString().slice(0,10);
+  let todayIdx = dates.indexOf(today);
+  if(todayIdx === -1) todayIdx = 7; // fallback: past_days=7 means index 7 is "today"
+
+  document.getElementById('today-etp').innerHTML = (et0[todayIdx] ?? 0).toFixed(2) + '<span> mm/j</span>';
+  document.getElementById('location-meta').textContent = loc.name;
+
+  const past7 = et0.slice(Math.max(0,todayIdx-6), todayIdx+1).reduce((a,b)=>a+b,0);
+  const next7 = et0.slice(todayIdx, todayIdx+7).reduce((a,b)=>a+b,0);
+  document.getElementById('sum-past7').textContent = past7.toFixed(1) + ' mm';
+  document.getElementById('sum-next7').textContent = next7.toFixed(1) + ' mm';
+
+  // table
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  dates.forEach((d,i)=>{
+    const tr = document.createElement('tr');
+    if(i === todayIdx) tr.className = 'today';
+    else if(i < todayIdx) tr.className = 'past';
+    tr.innerHTML = `<td>${fmtDate(d)}${i===todayIdx?' · aujourd’hui':''}</td>
+      <td>${(et0[i]??0).toFixed(2)}</td>
+      <td>${(rain[i]??0).toFixed(1)}</td>
+      <td>${tmin[i]?.toFixed(0)}° / ${tmax[i]?.toFixed(0)}°</td>`;
+    tbody.appendChild(tr);
+  });
+
+  drawChart(dates, et0, rain, todayIdx);
+  updateIrrigation();
+}
+
+function drawChart(dates, et0, rain, todayIdx){
+  const canvas = document.getElementById('etp-chart');
+  const wrap = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  const cssWidth = wrap.clientWidth - 32;
+  const cssHeight = 260;
+  canvas.style.width = cssWidth + 'px';
+  canvas.style.height = cssHeight + 'px';
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,cssWidth,cssHeight);
+
+  const padL = 42, padR = 42, padT = 16, padB = 30;
+  const plotW = cssWidth - padL - padR;
+  const plotH = cssHeight - padT - padB;
+  const n = dates.length;
+  const barSlot = plotW / n;
+  const barW = Math.max(3, barSlot * 0.6);
+
+  const maxEt0 = Math.max(1, ...et0) * 1.15;
+  const maxRain = Math.max(1, ...rain) * 1.15;
+
+  function yEt0(v){ return padT + plotH - (v/maxEt0)*plotH; }
+  function yRain(v){ return padT + plotH - (v/maxRain)*plotH; }
+  function xC(i){ return padL + barSlot*i + barSlot/2; }
+
+  ctx.strokeStyle = '#DCD4BC';
+  ctx.lineWidth = 1;
+  ctx.font = '11px Roboto Mono, monospace';
+  ctx.fillStyle = '#6b6558';
+  for(let g=0; g<=4; g++){
+    const v = (maxEt0/4)*g;
+    const y = yEt0(v);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(padL+plotW, y);
+    ctx.stroke();
+    ctx.textAlign = 'right';
+    ctx.fillText(v.toFixed(1), padL-6, y+3);
+  }
+
+  et0.forEach((v,i)=>{
+    const x = xC(i) - barW/2;
+    const y = yEt0(v);
+    ctx.fillStyle = i < todayIdx ? 'rgba(107,101,88,0.35)' : (i===todayIdx ? '#DA121A' : '#2F5233');
+    ctx.fillRect(x, y, barW, (padT+plotH) - y);
+  });
+
+  ctx.strokeStyle = '#1c6fb5';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  rain.forEach((v,i)=>{
+    const x = xC(i);
+    const y = yRain(v);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.fillStyle = '#1c6fb5';
+  rain.forEach((v,i)=>{
+    ctx.beginPath();
+    ctx.arc(xC(i), yRain(v), 2.5, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#1c6fb5';
+  for(let g=0; g<=4; g++){
+    const v = (maxRain/4)*g;
+    const y = yRain(v);
+    ctx.fillText(v.toFixed(0), padL+plotW+6, y+3);
+  }
+
+  ctx.fillStyle = '#6b6558';
+  ctx.textAlign = 'center';
+  const step = Math.ceil(n/8);
+  dates.forEach((d,i)=>{
+    if(i % step !== 0 && i !== todayIdx) return;
+    ctx.fillStyle = i===todayIdx ? '#DA121A' : '#6b6558';
+    ctx.fillText(fmtDate(d).replace('.',''), xC(i), cssHeight-8);
+  });
+
+  ctx.textAlign = 'left';
+  ctx.font = '12px Roboto, sans-serif';
+  ctx.fillStyle = '#2F5233'; ctx.fillRect(padL, 2, 10, 10);
+  ctx.fillStyle = '#1c1a15'; ctx.fillText('ET0 (mm/j, axe gauche)', padL+16, 11);
+  ctx.fillStyle = '#1c6fb5'; ctx.fillRect(padL+220, 2, 10, 10);
+  ctx.fillStyle = '#1c1a15'; ctx.fillText('Pluie (mm, axe droit)', padL+236, 11);
+}
+
+function updateIrrigation(){
+  if(!currentData) return;
+  const dates = currentData.daily.time;
+  const et0 = currentData.daily.et0_fao_evapotranspiration;
+  const rain = currentData.daily.precipitation_sum;
+  const today = new Date().toISOString().slice(0,10);
+  let todayIdx = dates.indexOf(today);
+  if(todayIdx === -1) todayIdx = 7;
+
+  const kcSelect = document.getElementById('kc-select');
+  let kc = kcSelect.value === 'custom' ? parseFloat(document.getElementById('kc-custom').value||1) : parseFloat(kcSelect.value);
+  const periode = parseInt(document.getElementById('periode-select').value,10);
+  const surface = parseFloat(document.getElementById('surface').value||0);
+
+  const et0Slice = et0.slice(todayIdx, todayIdx+periode);
+  const rainSlice = rain.slice(todayIdx, todayIdx+periode);
+
+  const etcTotal = et0Slice.reduce((a,b)=>a+b,0) * kc;
+  const rainTotal = rainSlice.reduce((a,b)=>a+b,0);
+  const deficit = Math.max(0, etcTotal - rainTotal);
+  const litres = deficit * surface; // 1mm on 1m2 = 1 litre
+
+  document.getElementById('etc-total').textContent = etcTotal.toFixed(1);
+  document.getElementById('pluie-total').textContent = rainTotal.toFixed(1);
+  document.getElementById('deficit-mm').textContent = deficit.toFixed(1);
+  document.getElementById('litres-total').textContent = Math.round(litres).toLocaleString('fr-FR');
+}
+
+// events
+document.getElementById('kc-select').addEventListener('change', (e)=>{
+  document.getElementById('kc-custom-field').style.display = e.target.value === 'custom' ? 'block' : 'none';
+  updateIrrigation();
+});
+document.getElementById('kc-custom').addEventListener('input', updateIrrigation);
+document.getElementById('periode-select').addEventListener('change', updateIrrigation);
+document.getElementById('surface').addEventListener('input', updateIrrigation);
+
+document.getElementById('search-btn').addEventListener('click', doSearch);
+document.getElementById('place-input').addEventListener('keydown', (e)=>{ if(e.key==='Enter') doSearch(); });
+
+async function doSearch(){
+  const q = document.getElementById('place-input').value.trim();
+  if(!q) return;
+  suggestionsEl.style.display='none';
+  const results = await geocode(q);
+  if(results.length === 0){
+    statusEl.textContent = `Aucun lieu trouvé pour "${q}".`;
+    return;
+  }
+  if(results.length === 1){
+    loadLocation({name: `${results[0].name} (${results[0].admin2||results[0].admin1||''})`.trim(), lat: results[0].latitude, lon: results[0].longitude});
+    return;
+  }
+  suggestionsEl.innerHTML = '';
+  results.forEach(r=>{
+    const div = document.createElement('div');
+    div.textContent = `${r.name} — ${r.admin2 || r.admin1 || ''} (${r.country})`;
+    div.addEventListener('click', ()=>{
+      suggestionsEl.style.display='none';
+      loadLocation({name:r.name, lat:r.latitude, lon:r.longitude});
+    });
+    suggestionsEl.appendChild(div);
+  });
+  suggestionsEl.style.display='block';
+}
+
+document.getElementById('geoloc-btn').addEventListener('click', ()=>{
+  if(!navigator.geolocation){ statusEl.textContent = "Géolocalisation non disponible sur cet appareil."; return; }
+  statusEl.textContent = "Localisation en cours…";
+  navigator.geolocation.getCurrentPosition(
+    pos => loadLocation({name:'Ma position', lat: pos.coords.latitude, lon: pos.coords.longitude}),
+    err => { statusEl.textContent = "Impossible d'obtenir la position (autorisation refusée ?)."; }
+  );
+});
+
+window.addEventListener('resize', ()=>{
+  if(currentData){
+    const dates = currentData.daily.time;
+    const today = new Date().toISOString().slice(0,10);
+    let todayIdx = dates.indexOf(today);
+    if(todayIdx === -1) todayIdx = 7;
+    drawChart(dates, currentData.daily.et0_fao_evapotranspiration, currentData.daily.precipitation_sum, todayIdx);
+  }
+});
+
+// init
+loadLocation(currentLoc);
+</script>
+
+</body>
+</html>
